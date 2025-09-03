@@ -1,44 +1,29 @@
-import type { D1Database } from "@cloudflare/workers-types";
+import { createApp } from '@/app';
+import { customLogger } from '@/middleware/logger';
+import index from '@/routes/index.routes';
+import tasks from '@/routes/tasks/tasks.index';
 
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { drizzle } from "drizzle-orm/d1";
-import { Hono } from "hono";
-import { logger } from "hono/logger";
+import configureOpenApi from './lib/configure-open-api';
 
-import { posts } from "./db/schema";
-import { NOT_FOUND } from "./utils/http-status-code";
+const app = createApp();
+const routes = [
+  index,
+  tasks,
+];
 
-// set env variables
-export interface Env {
-  WRANGLER_VAR: string;
-  LOCAL_VAR: string;
-  bun_hono_d1: D1Database;
-}
+configureOpenApi(app);
 
-const app = new OpenAPIHono<{ Bindings: Env }>({ strict: false });
-app.use(logger());
-
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
+routes.forEach((route) => {
+  app.route('/', route);
 });
 
-app.get("/posts", async (c) => {
-  const db = drizzle(c.env.bun_hono_d1);
-  const results = await db.select().from(posts).all();
-  return c.json(results);
+app.get('/', (c) => {
+  customLogger('Testing Logger');
+  return c.text('Hello Hono!');
 });
 
-app.get("/env", (c) => {
-  return c.text(`Variable from Wrangler.jsonc: ${c.env.WRANGLER_VAR}
-Variable from .dev.vars: ${c.env.LOCAL_VAR}`);
+app.get('/env', (c) => {
+  return c.text(c.env.NODE_ENV);
 });
 
-// not found
-app.notFound((c) => {
-  return c.json({
-    message: `Not found - ${c.req.path}`,
-  }, NOT_FOUND);
-});
-
-// TODO: add one to catch all errors.
 export default app;

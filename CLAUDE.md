@@ -2,69 +2,93 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Architecture
-
-This is a Cloudflare Workers application built with:
-
-- **Hono** - Web framework for routing and middleware
-- **Drizzle ORM** - Database ORM for SQLite/Cloudflare D1
-- **Cloudflare D1** - Serverless SQLite database
-- **Bun** - JavaScript runtime and package manager
-
-The application entry point is `src/index.ts` which exports a Hono app. Database schema is defined in `src/db/schema.ts`.
-
 ## Development Commands
 
-```bash
-# Install dependencies
-bun i
+- `bun run dev` - Start development server with Wrangler
+- `bun run deploy` - Deploy to Cloudflare Workers with minification
+- `bun run cf-typegen` - Generate TypeScript types from Wrangler configuration
+- `bun run check-types` - Run TypeScript type checking without emitting files
+- `bun run lint` - Run ESLint on the codebase
+- `bun run lint:fix` - Run ESLint with automatic fixes
 
-# Start development server (localhost:8787)
-bun run dev
+## Technology used
 
-# Deploy to Cloudflare Workers
-bun run deploy
+### Current Technologies
+- **Hono + Bun** - Web framework and runtime
+  - [Hono Docs](https://hono.dev/)
+  - [Bun Docs](https://bun.sh/docs)
+- **Cloudflare Workers** - Serverless runtime platform
+  - [Workers Docs](https://developers.cloudflare.com/workers/)
+- **Zod** - TypeScript-first schema validation
+  - [Zod Docs](https://zod.dev/)
+- **Zod OpenAPI + Scalar** - OpenAPI specification and documentation
+  - [Hono Zod OpenAPI Docs](https://github.com/honojs/middleware/tree/main/packages/zod-openapi)
+  - [Scalar Docs](https://docs.scalar.com/)
+- **@antfu/eslint-config** - ESLint configuration
+  - [antfu/eslint-config Docs](https://github.com/antfu/eslint-config)
 
-# Generate database migrations
-bun run db:generate
+### Planned Technologies
+- **Cloudflare D1** - SQLite database for Workers
+  - [D1 Docs](https://developers.cloudflare.com/d1/)
+- **Drizzle ORM** - TypeScript ORM
+  - [Drizzle Docs](https://orm.drizzle.team/)
+- **Better Auth** - Authentication library
+  - [Better Auth Docs](https://www.better-auth.com/)
+- **Vitest + @cloudflare/vitest-pool-workers** - Testing framework
+  - [Vitest Docs](https://vitest.dev/)
+  - [Vitest Pool Workers](https://github.com/cloudflare/workers-sdk/tree/main/packages/vitest-pool-workers)
 
-# Apply migrations to local D1 database
-bun run db:local-up
+## Architecture Overview
 
-# Apply migrations to production D1 database
-bun run db:prod-up
+This is a Hono-based API running on Cloudflare Workers with OpenAPI specification support.
 
-# Open Drizzle Studio for production database
-bun run db:studio
+### Core Structure
 
-# Open Drizzle Studio for local database
-bun run db:studio:local
+- **Entry Point**: `src/index.ts` - Configures the main app with routes and OpenAPI documentation
+- **App Factory**: `src/app.ts` - Creates Hono app instances with OpenAPIHono and shared middleware
+- **Types**: `src/types.ts` - Environment bindings and OpenAPI type definitions
+- **OpenAPI Config**: `src/lib/configure-open-api.ts` - Configures OpenAPI documentation endpoint
 
-# Generate TypeScript types for Cloudflare bindings
-bun run cf-typegen
+### Route Organization
+
+Routes follow a modular pattern:
+- `src/routes/` - Route definitions organized by feature
+- Each feature has three files:
+  - `*.routes.ts` - OpenAPI route definitions using createRoute
+  - `*.handlers.ts` - Route handler implementations
+  - `*.index.ts` - Combines routes and handlers into a router
+
+Example structure:
+```
+src/routes/tasks/
+├── tasks.routes.ts    # OpenAPI route schemas
+├── tasks.handlers.ts  # Handler implementations
+└── tasks.index.ts     # Router combining routes + handlers
 ```
 
-## Database Configuration
+### Code Standards
 
-Two Drizzle configs exist:
+- Uses `@antfu/eslint-config` with TypeScript support
+- Enforces kebab-case filenames (except README.md, CLAUDE.md)
+- Uses type definitions instead of interfaces
+- Semi-colons and single quotes enforced
+- No console statements (warnings only)
+- Import sorting with perfectionist plugin
 
-- `drizzle.config.ts` - Production config using D1 HTTP driver with environment variables
-- `drizzle.config.local.ts` - Local development config pointing to `.wrangler/state/v3/d1/...`
+### Environment Setup
 
-The D1 database binding is named `bun_hono_d1` and configured in `wrangler.jsonc`.
+Configure Cloudflare bindings in `wrangler.jsonc`. The app expects these environment variables:
+- `DATABASE_URL` - Database connection string
+- `JWT_SECRET` - JWT signing secret
+- `NODE_ENV` - Environment identifier
 
-## Environment Variables
+Pass bindings as generics when creating Hono instances:
+```ts
+const app = new Hono<{ Bindings: Bindings }>();
+```
 
-There are 2 places where we store environment variables and it depends on 
+### API Documentation
 
-Environment variables are defined in the `Env` type in `src/index.ts`:
-
-- `WRANGLER_VAR` - Set in wrangler.jsonc
-- `LOCAL_VAR` - Set in .dev.vars file (not tracked)
-- `bun_hono_d1` - D1 database binding
-
-For production Drizzle config, set these environment variables:
-
-- `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_DATABASE_ID`
-- `CLOUDFLARE_D1_TOKEN`
+- OpenAPI spec available at `/doc`
+- Scalar API documentation UI at `/scalar`
+- Uses Zod schemas for request/response validation
