@@ -1,16 +1,20 @@
-import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
-export const posts = sqliteTable("posts", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  slug: text("slug").notNull().unique(),
-  status: text("status", { enum: ["draft", "published", "archived"] }).notNull().default("draft"),
-  authorId: text("author_id"),
-  excerpt: text("excerpt"),
-  featuredImage: text("featured_image"),
-  tags: text("tags"),
-  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+export const tasks = sqliteTable('tasks', {
+  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  done: integer('done', { mode: 'boolean' }).notNull().default(false),
 });
+
+export const selectTasksSchema = createSelectSchema(tasks);
+export const insertTasksSchema = createInsertSchema(tasks, {
+  name: schema => schema.min(1),
+})
+  .required({
+    done: true,
+  })
+  .omit({
+    id: true,
+  });
+export const updateTasksSchema = insertTasksSchema.partial();

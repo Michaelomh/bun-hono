@@ -1,4 +1,5 @@
 // Generated file. Do not edit
+// Codes retrieved on Thu, 03 Oct 2024 12:05:14 GMT from https://raw.githubusercontent.com/prettymuchbryce/http-status-codes/refs/heads/master/codes.json
 /**
  * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.3.3
  *

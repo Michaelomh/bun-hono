@@ -1,26 +1,35 @@
-# Bun-hono application
-
-## Installation and running
-
-Run the following scripts would install all of the project dependencies and then run the hono server on localhost:8787.
-
-```bash
-bun i
-bun run dev
+```txt
+npm install
+npm run dev
 ```
 
-## Deploying
-
-Run the following scripts to deploy the Hono server into cloudflare workers. You are able to access the app from here: http://bun-hono.michaelomg.workers.dev/
-
-```bash
-bun run deploy
+```txt
+npm run deploy
 ```
 
-## Migrating databases
+[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
 
-We use Cloudflare d1 database. Use the following commands
+```txt
+npm run cf-typegen
+```
 
-`db:local-up` to apply migrations to local cloudflare d1 instance. You can view this instance in .wrangler/state/v3/d1
+Pass the `CloudflareBindings` as generics when instantiation `Hono`:
 
-`db:prod-up` to apply migrations to remote cloudflare d1 instance. This is the "production" instance of the database. View this database in the Cloudflare d1 dashboard.
+```ts
+// src/index.ts
+const app = new Hono<{ Bindings: CloudflareBindings }>();
+```
+
+## Database migrations
+
+Work flow when working locally
+
+bun run db:generate - generate a migration file based on updates that was done.
+(drizzle-kit generate)
+
+bun run db:local:migrate - run the migration script to local db
+(wrangler d1 migrations apply --local "bun-hono-d1")
+
+
+### Release to production
+bunx wrangler d1 migrations apply --remote 'bun-hono-d1' --file=./src/db/drizzle/migrations/<migration_file_name>

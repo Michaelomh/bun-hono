@@ -2,16 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bun-hono",
   "main": "src/index.ts",
-  "compatibility_date": "2025-08-31",
+  "compatibility_date": "2025-09-02",
   "d1_databases": [
     {
-      "binding": "bun_hono_d1",
+      "binding": "DB",
       "database_name": "bun-hono-d1",
       "database_id": "89fc2c65-9750-4781-b80e-a61325664f17",
       "migrations_dir": "src/db/migrations"
     }
-  ],
-  "vars": {
-    "WRANGLER_VAR": "env variable from wrangler.jsonc"
-  }
+  ]
 }
