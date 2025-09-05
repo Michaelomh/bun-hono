@@ -2,37 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bun-hono",
   "main": "src/index.ts",
-  "compatibility_date": "2025-09-02"
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+  "compatibility_date": "2025-09-02",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bun-hono-d1",
+      "database_id": "89fc2c65-9750-4781-b80e-a61325664f17",
+      "migrations_dir": "src/db/migrations"
+    }
+  ]
 }

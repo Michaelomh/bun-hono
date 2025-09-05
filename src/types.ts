@@ -1,10 +1,10 @@
-import type { OpenAPIHono } from '@hono/zod-openapi';
+import type { OpenAPIHono, RouteConfig, RouteHandler } from '@hono/zod-openapi';
 
-// Define your environment types
-// export type Bindings = {
-//   DATABASE_URL: string;
-//   JWT_SECRET: string;
-//   NODE_ENV: string;
-// };
+// set env variables
+export type Env = {
+  DB: D1Database;
+};
 
-export type AppOpenAPI = OpenAPIHono;
+export type AppOpenAPI = OpenAPIHono<{ Bindings: Env }>;
+
+export type AppRouteHandler<R extends RouteConfig> = RouteHandler<R, { Bindings: Env }>;

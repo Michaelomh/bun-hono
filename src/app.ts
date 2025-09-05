@@ -6,8 +6,10 @@ import { customLogger } from '@/middleware/logger';
 import defaultHook from '@/utils/default-hook';
 import * as HttpStatusCode from '@/utils/http-status-codes';
 
+import type { Env } from './types';
+
 export function createRouter() {
-  return new OpenAPIHono(
+  return new OpenAPIHono<{ Bindings: Env }>(
     { strict: false, defaultHook },
   );
 }
