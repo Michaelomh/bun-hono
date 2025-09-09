@@ -1,10 +1,36 @@
-```txt
-npm install
-npm run dev
+# Bun-hono application
+
+Goal: The goal of this Bun-hono application is to master and learn creation of a Hono API Server on Cloudflare workers.
+
+In addition, to also master some backend technologies/concepts:
+
+| Technolgo            | Usage                     | Done |
+| :------------------- | :------------------------ | ---: |
+| Bun + Hono           | Web application framework |   ✅ |
+| CloudFlare Workers   | Deployment                |   ✅ |
+| CloudFlare D1        | SQLite database           |   ✅ |
+| @antfu/eslint-config | eslint & prettier         |   ✅ |
+| Drizzle ORM + Kit    | ORM and migration         |   ✅ |
+| Zod                  | Validation                |   ✅ |
+| Zod OpenAPI + Scalar | Documentation             |   ✅ |
+| Better Auth          | Authentication and RBAC   |   ❌ |
+| Vitest               | Testing                   |   ❌ |
+
+## Installation and running
+
+Run the following scripts would install all of the project dependencies and then run the hono server on localhost:8787.
+
+```bash
+bun i
+bun run dev
 ```
 
-```txt
-npm run deploy
+## Deploying
+
+Run the following scripts to deploy the Hono server into cloudflare workers. You are able to access the app from here: http://bun-hono.michaelomg.workers.dev/
+
+```bash
+bun run deploy
 ```
 
 [For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
@@ -20,16 +46,18 @@ Pass the `CloudflareBindings` as generics when instantiation `Hono`:
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 ```
 
-## Database migrations
+## Migrating databases
 
-Work flow when working locally
+We use Cloudflare d1 database. Use the following commands:
 
-bun run db:generate - generate a migration file based on updates that was done.
-(drizzle-kit generate)
+- `db:generate` to generate migration scripts based on the changes to the drizzle schema.
+- `db:local:migrate` to apply migrations to local cloudflare d1 instance. You can view this instance in .wrangler/state/v3/d1
+- `db:local:reset` to reset the local sqlite database by removing the sqlite db instance. Run `db:local-up` to bring back the database to the latest state.
+- `db:prod:migrate` to apply migrations to remote cloudflare d1 instance. This is the "production" instance of the database. View this database in the Cloudflare d1 dashboard.
 
-bun run db:local:migrate - run the migration script to local db
-(wrangler d1 migrations apply --local "bun-hono-d1")
+### Other Scripts
 
-
-### Release to production
-bunx wrangler d1 migrations apply --remote 'bun-hono-d1' --file=./src/db/drizzle/migrations/<migration_file_name>
+- `db:prod:studio` to run drizzle kit studio to see the database in production.
+- `db:local:studio` to run drizzle kit studio to see the database locally.
+- ❌ to run only a single migration script locally.
+- ❌ to run only a single migration script to production.

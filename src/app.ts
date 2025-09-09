@@ -1,4 +1,5 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
 
@@ -17,7 +18,8 @@ export function createRouter() {
 export function createApp() {
   const app = createRouter();
 
-  app.use(logger(customLogger))
+  app.use(cors())
+    .use(logger(customLogger))
     .use(requestId());
 
   app.notFound((c) => {
