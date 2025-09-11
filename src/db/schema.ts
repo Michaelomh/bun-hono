@@ -11,10 +11,6 @@ export const selectTasksSchema = createSelectSchema(tasks);
 export const insertTasksSchema = createInsertSchema(tasks, {
   name: schema => schema.min(1),
 })
-  .required({
-    done: true,
-  })
-  .omit({
-    id: true,
-  });
+  .required({ done: true })
+  .omit({ id: true });
 export const updateTasksSchema = insertTasksSchema.partial();
