@@ -6,6 +6,6 @@ import type { Env } from '@/types';
 
 import * as schema from '@/db/schema';
 
-export function dbInstance(c: Context<{ Bindings: Env }>) {
-  return drizzle(c.env.DB, { schema });
+export function dbInstance(c: Context<Env>) {
+  return drizzle(c.env.DB, { schema, casing: 'snake_case' });
 }

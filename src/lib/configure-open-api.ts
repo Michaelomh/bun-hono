@@ -13,11 +13,13 @@ export default function configureOpenAPI(app: AppOpenAPI) {
     },
   });
 
-  app.get(
-    '/docs',
-    Scalar({
-      url: '/doc',
-      theme: 'kepler',
-    }),
-  );
+  app.get('/docs', Scalar({
+    pageTitle: 'API Documentation',
+    theme: 'kepler',
+    sources: [
+      { url: '/doc', title: 'Tasks' },
+      // Better Auth schema generation endpoint
+      { url: '/api/auth/open-api/generate-schema', title: 'Authentication' },
+    ],
+  }));
 }
