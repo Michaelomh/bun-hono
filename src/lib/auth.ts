@@ -9,26 +9,24 @@ import type { Env } from '@/types';
 
 import * as schema from '@/db/schema';
 
+const TOKEN_EXPIRY_TIME_SECONDS = 60 * 60 * 24;
+
 export function auth(c: Context<Env>): ReturnType<typeof betterAuth> {
   return betterAuth({
+    session: {
+      expiresIn: TOKEN_EXPIRY_TIME_SECONDS,
+    },
     database: drizzleAdapter(drizzle(c.env.DB, { schema, casing: 'snake_case' }), {
       provider: 'sqlite',
     }),
     appName: 'bun-hono',
-    plugins: [
-      openAPI(),
-    ],
+    plugins: [openAPI()],
     user: {
       additionalFields: {
-        role: {
-          type: 'string',
-          input: false,
-        },
+        role: { type: 'string', input: false },
       },
     },
-    emailAndPassword: {
-      enabled: true,
-    },
+    emailAndPassword: { enabled: true },
     socialProviders: {
       google: {
         prompt: 'select_account',
@@ -36,6 +34,6 @@ export function auth(c: Context<Env>): ReturnType<typeof betterAuth> {
         clientSecret: c.env.GOOGLE_CLIENT_SECRET as string,
       },
     },
+    trustedOrigins: [c.env.CLIENT_URL],
   });
 }
-3

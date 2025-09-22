@@ -2,7 +2,7 @@ import { defineConfig } from 'drizzle-kit';
 import { readFileSync } from 'node:fs';
 
 // Parse .env.local manually
-const envContent = readFileSync('.env.local', 'utf8');
+const envContent = readFileSync('.env', 'utf8');
 const env = Object.fromEntries(
   envContent.split('\n')
     .filter(line => line.includes('='))
@@ -17,6 +17,6 @@ export default defineConfig({
   dbCredentials: {
     accountId: env.CLOUDFLARE_ACCOUNT_ID,
     databaseId: env.CLOUDFLARE_DATABASE_ID,
-    token: env.CLOUDFLARE_D1_TOKEN!,
+    token: env.CLOUDFLARE_D1_TOKEN,
   },
 });

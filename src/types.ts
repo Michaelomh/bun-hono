@@ -9,6 +9,7 @@ export type Env = {
     NODE_ENV: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
+    CLIENT_URL: string;
   };
   Variables: {
     user: ReturnType<typeof auth>['$Infer']['Session']['user'] | null;
