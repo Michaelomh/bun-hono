@@ -21,6 +21,12 @@ export function createApp() {
   const app = createRouter();
 
   app
+    .use('*', async (c, next) => {
+      if (!c.req.path.startsWith('/api/auth/')) {
+        return cors()(c, next);
+      }
+      return next();
+    })
     .use('/api/auth/*', async (c, next) => {
       const corsMiddleware = cors({
         origin: c.env.CLIENT_URL,

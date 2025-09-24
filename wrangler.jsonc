@@ -6,6 +6,14 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NODE_ENV": "development",
+    "GOOGLE_CLIENT_ID": "918568444343-aghelb5j6r6uuc1fg49dhmhmnba4v25f.apps.googleusercontent.com",
+    "CLIENT_URL": "https://vite-react-cloudflare-pages-production.michaelomg.workers.dev"
+  },
   "d1_databases": [
     {
       "binding": "DB",

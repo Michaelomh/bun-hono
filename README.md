@@ -13,7 +13,7 @@ In addition, to also master some backend technologies/concepts:
 | Drizzle ORM + Kit    | ORM and migration         |   ✅ |
 | Zod                  | Validation                |   ✅ |
 | Zod OpenAPI + Scalar | Documentation             |   ✅ |
-| Better Auth          | Authentication and RBAC   |   ❌ |
+| Better Auth          | Authentication and RBAC   |   🚧 |
 | Vitest               | Testing                   |   ❌ |
 
 ## Installation and running
@@ -36,7 +36,7 @@ bun run deploy
 [For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
 
 ```txt
-npm run cf-typegen
+bun run cf-typegen
 ```
 
 Pass the `CloudflareBindings` as generics when instantiation `Hono`:
